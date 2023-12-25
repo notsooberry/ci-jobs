@@ -1,13 +1,26 @@
 const express = require('express');
 const app = express();
 
+let server;
+
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+
+beforeAll((done) => {
+  server = app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+    done();
+  });
 });
 
-module.exports = app; // Для экспорта для тестов
+afterAll((done) => {
+  server.close(() => {
+    console.log('Server closed');
+    done();
+  });
+});
+
+module.exports = app;
